@@ -5,7 +5,7 @@ const cookieParser=require("cookie-parser")
 
 app.use(express.json())
 const mongoose=require('mongoose')
-// mongoose.connect("https://mongodb+srv://mohithsai309:Mohith@9399@blogproject.vm1xjav.mongodb.net/?retryWrites=true&w=majority&appName=blogProject")
+// mongoose.connect("https://mongodb+srv://:@blogproject.vm1xjav.mongodb.net/?retryWrites=true&w=majority&appName=blogProject")
 
 const model=require('./authDB')
 app.use(express.json())
