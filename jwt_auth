@@ -1,0 +1,52 @@
+
+const express=require("express")
+const app=express()
+const jwt=require("jsonwebtoken")
+const cookieParser=require("cookie-parser")
+const Student=require("./Student.json")
+
+//const Profile=require("Profile.html")
+const path=require("path")
+app.use(express.json())
+app.use(cookieParser())
+app.use(express.static(path.join(__dirname,"public")))
+const mongoose=require('mongoose')
+app.get("/",(req,res)=>{
+  res.send("kll")
+ })
+app.get("/login",(req,res)=>{
+   const email= req.body.email||"john@gmail.com"
+   const password=req.body.password||"1234"
+  // console.log(Student1)
+   const stud=Student.find((stud)=>{
+    if(stud.email===email&&stud.password===password)
+        return stud
+   })
+   if(stud){
+
+    const accestoken=jwt.sign({email},"secret",{expiresIn:"5m"})
+    res.cookie("access",accestoken)
+    res.send({login:"true"})
+   }else{
+    res.send({login:"false"})
+   }
+})
+const verifyuser=(req,res,next)=>{
+const token=req.cookies.access;
+
+jwt.verify(token,"secret",(err,data)=>{
+    if(err){
+        console.log("invalid token")
+     } else
+    {req.token=token
+        next()}
+})
+}
+app.get("/profile",verifyuser,(req,res)=>{
+    console.log("authorized")
+    //res.send({profle:true,token:req.token})
+    res.sendFile(path.join(__dirname, 'public', 'Profile.html'));
+})
+app.listen(5000,()=>{
+    console.log("server is listening...")
+})
